@@ -15,5 +15,4 @@ require("toggleterm_setting")
 require("ranger_setting")
 require("hop_setting")
 require("aerial_setting")
-require("yarepl_setting")
 

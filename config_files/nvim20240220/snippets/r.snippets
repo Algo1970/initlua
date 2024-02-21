@@ -1,0 +1,899 @@
+# /* ggplot2 */
+snippet ggline
+	# ggplot_line----${0}
+	ggplot(Theoph,aes(x = Time, y= conc)) + 
+		geom_line(color= "black", size = 1.5, alpha = 0.3) + 
+		geom_point(color = "black", size = 1.5, alpha = 0.2) +
+		xlim(0, 13) +
+		labs(y = "concentration") +
+		theme_bw()
+
+snippet gghist_dodge
+	# ggplot_histogram_dogde----${0}
+	ggplot(df, aes(x=age, fill = gender)) + 
+	  geom_histogram(position ="dodge",binwidth = 5, alpha = 0.7) +
+	  theme(legend.position = "top") +
+	  coord_flip() +
+	  xlab("") + ylab("patient_number") 
+
+snippet ggbar
+	# ggplot_bar----${0}
+	y = c(100, 200, 300)
+	names(y) = c("A", "B", "C")
+	(df = data.frame(x = names(y), y = y))
+	ggplot(df, aes(x = x, y = y) ) + geom_bar(stat = "identity")
+
+snippet ggpyramid
+	# ggplot_pyramid----${0}
+	ggplot(df, aes(x=age, fill=gender)) + 
+	  geom_histogram(position ="dodge",binwidth = 5, alpha = 0.7) +
+	  theme(legend.position = "top") +
+	  coord_flip() +
+	  facet_grid(. ~ gender) +
+	  # scale_fill_brewer(palette = "Set1") +
+	  xlab("") + ylab("patient_number") 
+
+snippet ggpyramid2
+	# patientAllのdataframeカラムage, genderに対し----${0}
+	hist100 = function(x){hist(x, breaks = seq(0, 110, 5))}
+	df2 = tapply(df\$age, df\$gender, hist100)
+	(df_f = data.frame(age = df2\$female\$mids-2.5, 
+	                  gender = rep("female", length(df2\$female\$mids)),
+	                  n = df2\$female\$counts))
+	(df_m = data.frame(age = df2\$male\$mids-2.5, 
+	                  gender = rep("male", length(df2\$male\$mids)),
+	                  n = df2\$male\$counts))
+	(df_f_m = rbind(df_f, df_m))
+	ggplot(df_f_m, aes(x=age, y=n, fill=gender)) + 
+	  geom_bar(stat ="identity", position = "dodge") +
+	  theme(legend.position = "top") +
+	  coord_flip()
+
+snippet gglayout
+	# ggplot_layout----${0}
+	library(patchwork)
+	p1 = ggplot(mtcars, aes(wt, mpg)) + geom_point()
+	p2 = ggplot(mtcars, aes(qsec, drat)) + geom_point()
+	p1 + p2 + plot_layout(ncol = 1, heights = c(2, 1))
+
+
+# /* date */
+snippet date_series
+	# date_series----${0}
+	seq(as.Date("2010-01-01"), as.Date("2018-12-25"), by = "year")
+	seq(as.Date("2010-01-01"), as.Date("2012-12-25"), by = "month")
+	seq(as.Date("2010-01-01"), as.Date("2010-12-25"), by = "week")
+	seq(as.Date("2010-01-01"), as.Date("2010-01-25"), by = "day")
+	seq(as.Date("2010-01-01"), as.Date("2010-12-25"), by = "quarter")
+	lubridate::floor_date(as.Date("2018-12-21"), unit = "weeks", week_start = getOption("lubridate.week.start", 1))
+	lubridate::floor_date(as.Date("2018-12-21"), unit = "months")
+
+snippet lubridate
+	# lubridate_sample----${0}
+	lubridate::wday("2019-01-30", label = T, abbr = F)
+
+# /* system */
+snippet libpath
+	# libraryPath----${0}
+	(path = installed.packages()[,"LibPath"])
+	path[names(path) == 'ggplot2']
+	.libPaths()
+	names(path[path == .libPaths()[1]])
+	names(path[path == .libPaths()[2]])
+	names(path[path == .libPaths()[3]])
+	names(path[path == .libPaths()[4]])
+	# sudo chmod -R 777 /usr/local/lib/R/site-library
+	install.packages("liftr", lib = .libPaths()[2])
+
+# /* env */
+snippet advancedR_envvironment
+	globalenv()
+	parent.env(globalenv()) # parent.env(x)で親環境を調べる
+	parent.env(parent.env(globalenv()))
+	baseenv()  # base環境
+	search()   # globalenvの親環境をすべて調べる
+	ls(all.names = T)       # 環境無いのオブジェクト・関数, all.namesで.objectnameも表示
+	ls.str()   # 出力多すぎて読みにくい
+	x = 1:10
+	x = assign("x",  2:20, envir = .GlobalEnv )
+	get("x", envir = globalenv())  # 環境をしていしてオブジェクトを確認
+	rm("x", envir = globalenv())   # 環境からオブジェクトを削除
+	exists("x", envir = globalenv()) # オブジェクトの確認
+	assign("y", 100, envir = .GlobalEnv)
+	y
+
+snippet advancedR_pryr
+	library(pryr)
+	pryr::where("x")
+	pryr::otype(data.frame())
+	methods("mean")
+	methods(class = "ts")
+	address(x)
+
+# /* base_plot */
+snippet basePlotScatter
+	plot(mtcars\$wt, mtcars\$mpg, xlab = "X-label", main="title1", sub="title2")
+	plot(mtcars\$wt, mtcars\$mpg, col = ifelse(mtcars\$mpg>20, "red", "blue"), pch=16)  
+
+snippet basePlotLine
+	plot(Theoph[1:11,]\$Time, Theoph[1:11,]\$conc, type = "b")
+
+snippet basePlotHist
+	x <- rnorm(100)                                       # 正規乱数を 100 個生成して
+	hist(x, xlim=c(-4,4), ylim=c(0,0.5), label=TRUE, prob=T, ann=F)   # ann=Fで軸とタイトル削除
+
+snippet basePlotBar
+	barplot(VADeaths[,1], main = "Death of Rural Male")
+	barplot(VADeaths, main = "Deaths", legend = rownames(VADeaths))
+	barplot(VADeaths, beside = TRUE, main = "Deaths", legend = rownames(VADeaths))
+
+snippet basePlotBox
+	boxplot(mtcars\$wt)
+
+snippet basePlotPie
+	pie.sales <- c(0.12, 0.3, 0.26, 0.16, 0.04, 0.12)
+	names(pie.sales) <- c("Blueberry", "Cherry","Apple", "Boston Cream", "Other", "Vanilla Cream")
+	pie(pie.sales, main = "Pie chart of Sales")
+	pie(pie.sales, clockwise = TRUE, main = "Pie chart of Sales")
+
+snippet basePlotAdd
+	plot(sin, xlim=c(0,5), ylim=c(-1,1), ylab="", lty=2) # sin(x) を描く 
+	par(new=T)                                           # 上書き指定 
+	plot(cos, xlim=c(0,5), ylim=c(-1,1))                 # cos(x) を上書き
+
+snippet basePlotDendrogram
+	USArrests.d = dist(USArrests)
+	USArrests.hc = hclust(USArrests.d)
+	plot(USArrests.hc)
+
+snippet basePlotHeatmap
+	heatmap(as.matrix(USArrests))
+
+snippet basePlot3d
+	library(rgl)
+	plot3d(x = mtcars\$disp, y = mtcars\$wt, z = mtcars\$qsec )
+
+	plot(1:50, dbinom(1:50, 80, p=0.5), type="l", ylim=c(0,0.2))
+	par(new=T)
+	plot(1:50, dbinom(1:50, 100, p=0.5), type="l", ylim=c(0,0.2))
+	par(ann=F)
+	plot(1:50, pbinom(1:50, 20, p=0.5), type="l", ylim=c(0,1))
+	par(new=T)
+	plot(1:50, pbinom(1:50, 40, p=0.5), type="l", ylim=c(0,1))
+	par(new=T)
+	plot(1:50, pbinom(1:50, 60, p=0.5), type="l", ylim=c(0,1))
+	par(new=T)
+	plot(1:50, pbinom(1:50, 80, p=0.5), type="l", ylim=c(0,1))
+	par(new=T)
+	plot(1:50, pbinom(1:50, 100, p=0.5), type="l", ylim=c(0,1))
+
+
+
+# /* distribution */
+snippet distributionDiscreteUniform
+	sample(1:10, 6, replace=T)
+
+snippet distributionBinomial
+	par(ann=F)
+	plot(1:50, dbinom(1:50, 20, p=0.5), type="l", ylim=c(0,0.2))
+	par(new=T)
+	plot(1:50, dbinom(1:50, 40, p=0.5), type="l", ylim=c(0,0.2))
+	par(new=T)
+	plot(1:50, dbinom(1:50, 60, p=0.5), type="l", ylim=c(0,0.2))
+	par(new=T)
+	plot(1:50, dbinom(1:50, 80, p=0.5), type="l", ylim=c(0,0.2))
+	par(new=T)
+	plot(1:50, dbinom(1:50, 100, p=0.5), type="l", ylim=c(0,0.2))
+	par(ann=F)
+	plot(1:50, pbinom(1:50, 20, p=0.5), type="l", ylim=c(0,1))
+	par(new=T)
+	plot(1:50, pbinom(1:50, 40, p=0.5), type="l", ylim=c(0,1))
+	par(new=T)
+	plot(1:50, pbinom(1:50, 60, p=0.5), type="l", ylim=c(0,1))
+	par(new=T)
+	plot(1:50, pbinom(1:50, 80, p=0.5), type="l", ylim=c(0,1))
+	par(new=T)
+	plot(1:50, pbinom(1:50, 100, p=0.5), type="l", ylim=c(0,1))
+
+snippet distributionNegativeBinomial
+	par(ann=F)
+	plot(1:50, dnbinom(1:50, 1, p=0.5), type="l", xlim=c(0,30), ylim=c(0,0.2))
+	par(new=T)
+	plot(1:50, dnbinom(1:50, 4, p=0.5), type="l", xlim=c(0,30), ylim=c(0,0.2))
+	par(new=T)
+	plot(1:50, dnbinom(1:50, 10, p=0.5), type="l", xlim=c(0,30), ylim=c(0,0.2))
+	par(ann=F)
+	plot(1:50, pnbinom(1:50, 10, p=0.5), type="l", xlim=c(0,30), ylim=c(0,1))
+
+snippet distributionGeometric
+	par(ann=F)
+	plot(1:50, dgeom(1:50, 0.5), type="l", xlim=c(0,20))
+	par(ann=F)
+	plot(1:50, pgeom(1:50, 0.5), type="l", xlim=c(0,20))
+
+snippet distributionNormal
+	curve(dnorm(x, 0, 1), from = -7, to = 7, type = "l")
+	curve(pnorm(x, 0, 1), from = -7, to = 7, type = "l")
+
+snippet distributionExponential
+	par(ann=F)
+	curve(dexp(x, 0.5), from = 0, to = 10, type = "l", ylim=c(0,1.5))
+	par(new=T)
+	curve(dexp(x, 1.0), from = 0, to = 10, type = "l", ylim=c(0,1.5))
+	par(new=T)
+	curve(dexp(x, 1.5), from = 0, to = 10, type = "l", ylim=c(0,1.5))
+	par(ann=F)
+	curve(pexp(x, 0.5), from = 0, to = 10, type = "l", ylim=c(0,1))
+	par(new=T)
+	curve(pexp(x, 1.0), from = 0, to = 10, type = "l", ylim=c(0,1))
+	par(new=T)
+	curve(pexp(x, 1.5), from = 0, to = 10, type = "l", ylim=c(0,1))
+
+snippet distributionT
+	par(ann=F)
+	curve(dnorm(x, 0, 1), from = -3, to = 3, type = "l", ylim=c(0,0.4), lty=2)
+	par(new=T)
+	curve(dt(x, df =2), from = -3, to = 3, type = "l", ylim=c(0,0.4))
+	par(new=T)
+	curve(dt(x, df =5), from = -3, to = 3, type = "l", ylim=c(0,0.4), lty=3)
+
+snippet distributionChiSquare
+	par(ann=F)
+	curve(dchisq(x, 1), from = 0, to = 8, type = "l", ylim=c(0,1))
+	par(new=T)
+	curve(dchisq(x, 2), from = 0, to = 8, type = "l", ylim=c(0,1), lty=2)
+	par(new=T)
+	curve(dchisq(x, 4), from = 0, to = 8, type = "l", ylim=c(0,1), lty=3)
+	par(ann=F)
+	curve(pchisq(x, 1), from = 0, to = 8, type = "l", ylim=c(0,1))
+	par(new=T)
+	curve(pchisq(x, 2), from = 0, to = 8, type = "l", ylim=c(0,1), lty=2)
+	par(new=T)
+	curve(pchisq(x, 4), from = 0, to = 8, type = "l", ylim=c(0,1), lty=3)
+
+snippet distributionGamma
+	par(ann=F)
+	curve(dgamma(x, shape=1), from = 0, to = 8, type = "l", ylim=c(0,1))
+	par(new=T)
+	curve(dgamma(x, shape=3), from = 0, to = 8, type = "l", ylim=c(0,1), lty=2)
+	par(new=T)
+	curve(dgamma(x, shape=5), from = 0, to = 8, type = "l", ylim=c(0,1), lty=3)
+	par(ann=F)
+	curve(pgamma(x, shape=1), from = 0, to = 8, type = "l", ylim=c(0,1))
+	par(new=T)
+	curve(pgamma(x, shape=3), from = 0, to = 8, type = "l", ylim=c(0,1), lty=2)
+	par(new=T)
+	curve(pgamma(x, shape=5), from = 0, to = 8, type = "l", ylim=c(0,1), lty=3)
+
+snippet distributionBeta
+	par(ann=F)
+	curve(dbeta(x, 1, 1), from = 0, to = 1, type = "l", ylim=c(0,3))
+	par(new=T)
+	curve(dbeta(x, 1, 3), from = 0, to = 1, type = "l", ylim=c(0,3), lty=2)
+	par(new=T)
+	curve(dbeta(x, 2, 5), from = 0, to = 1, type = "l", ylim=c(0,3), lty=3)
+	par(ann=F)
+	curve(pbeta(x, 1, 1), from = 0, to = 1, type = "l", ylim=c(0,1))
+	par(new=T)
+	curve(pbeta(x, 1, 3), from = 0, to = 1, type = "l", ylim=c(0,1), lty=2)
+	par(new=T)
+	curve(pbeta(x, 2, 5), from = 0, to = 1, type = "l", ylim=c(0,1), lty=3)
+
+snippet distributionF
+	par(ann=F)
+	curve(df(x, 1, 5), from = 0, to = 2, type = "l", ylim=c(0,2))
+	par(new=T)
+	curve(df(x, 5, 20), from = 0, to = 2, type = "l", ylim=c(0,2), lty=2)
+	par(new=T)
+	curve(df(x, 20, 5), from = 0, to = 2, type = "l", ylim=c(0,2), lty=3)
+	par(ann=F)
+	curve(pf(x, 1, 5), from = 0, to = 2, type = "l", ylim=c(0,1))
+	par(new=T)
+	curve(pf(x, 5, 20), from = 0, to = 2, type = "l", ylim=c(0,1), lty=2)
+	par(new=T)
+	curve(pf(x, 20, 5), from = 0, to = 2, type = "l", ylim=c(0,1), lty=3)
+
+snippet distributionLogistic
+	par(ann=F)
+	curve(dlogis(x, scale = sqrt(3)/pi), from = -4, to = 4, type = "l", ylim=c(0,0.5))
+	par(new=T)
+	curve(dnorm(x, 0, 1), from = -4, to = 4, type = "l", ylim=c(0,0.5), lty=2)
+	par(ann=F)
+	curve(plogis(x, scale = sqrt(3)/pi), from = -4, to = 4, type = "l", ylim=c(0,1))
+	par(new=T)
+	curve(pnorm(x, 0, 1), from = -4, to = 4, type = "l", ylim=c(0,1), lty=2)
+
+# /* stat */
+snippet stats_two_sample_ttest
+	# 対応のない２郡の比較検定${0}
+	two_sample_ttest = function(data1, data2){
+		options(scipen=1)
+		# p値<0.05ならデータが正規分布に従うという帰無仮説が棄却。p値>=0.05なら、帰無仮説は棄却されない(正規分布)。
+		cat("正規性の検定:Shapiro-Wilk検定（n<2000）")
+		shapiro.test(data1) %>% print()
+		shapiro.test(data2) %>% print()
+		# 少なくとも n < 2000 では，様々な条件下で，Shapiro-Wilkが最も強力。
+		#cat("正規性の検定:Kolmogorov-Smirnov検定")
+		#ks.test(data1, "pnorm", mean(data1), sd=sqrt(var(data1))) %>% print()
+		#ks.test(data2, "pnorm", mean(data2), sd=sqrt(var(data2))) %>% print()
+
+		# p値>0.05なら、等分散という帰無仮説を採択
+		cat("等分散性の検定：F検定")
+		var.test(data1, data2) %>% print()
+
+		cat("二標本ｔ検定：正規分布で等分散")
+		t.test(data1, data2, var.equal = T) %>% print()
+		cat("二標本ｔ検定(ウェルチの検定)：正規分布だが等分散でない場合")
+		t.test(data1, data2, var.equal = F) %>% print()
+		cat("ウィルコクソンの順位和検定（マン・ホイットニーのU検定）：正規分布でない場合")
+		wilcox.test(data1, data2) %>% print()
+	}
+
+snippet stats_power_analysis
+	# power analysis----${0}
+	# n:サンプルサイズ, delta:平均値の差, sd:標準偏差, sig.level:有意水準, power:検定力, strict:Tだと厳密な両側検定
+	power.t.test(n = 10, delta = 0.5, sd = 1, sig.level = 0.05, power = NULL, strict = T)
+	# 検定力を0.8で決め打ち(t検定の場合)
+	power.t.test(n = NULL, delta = 0.5, sd = 1, sig.level = 0.05, power = 0.8, strict = T) # n>=64以上が良いという結論
+	# Effect size(効果量):意味のある有意差かどうか
+	power.t.test(n = NULL, d = 0.5, sig.level = 0.05, power = 0.8) # Cohen's d=0.5(中)で固定 -> n=64が必要
+	power.t.test(n = NULL, d = 0.8, sig.level = 0.05, power = 0.8) # Cohen's d=0.8(大)で固定 -> n=26と小さいサンプルサイズ 
+	# cohen.ES関数でeffect sizeを呼び出す
+	#?cohen.ES(test="t", size="medium")
+	#?cohen.ES(test="anova", size="medium")
+
+snippet stats_ANOVA_MultipleComparison
+	# ANOVA_multiple comparison(分散分析と多重比較検定)${0}
+	x = c(96.8,70.8,103.2,113.8,104.3)
+	y = c(137.2,108.3,133.5,117.7,134.4)
+	z = c(192.1,196.7,195.8,198.7,217.4)
+	summary(x)
+	summary(y)
+	summary(z)
+	(data = c(x, y, z))
+	(group = rep(c("x","y","z"),c(5,5,5)))
+	anova(aov(data ~ group))
+	# p値1.132e-07で十分小さく、帰無仮説は棄却(3群に差がないとはいえない)と判定
+	# 多重比較検定
+	t.test(x, y, var.equal = T)
+	# ボンフェローニ補正を行う場合、有意水準0.05/3=0.0166よりP値が小さい場合有意差あり
+	# 今回はp値0.01484で多重比較検定で有意差あり
+
+snippet stats_chisq.test
+	# カイ二乗検定${0}
+	# 観測された事象の頻度(相対頻度)が、期待頻度に適合しているか？ABO式血液型の分布
+	x = c(50, 15, 30, 5)
+	y = c(40, 20, 20, 30)
+	# 要素を上の行から順に (左から右へ) 埋める場合は，引数 byrow=T を指定する
+	(data = matrix(c(x, y), nrow = 2, byrow = T))
+	options(scipen=1)
+	chisq.test(data)
+	# p値が極めて小さく、頻度は同じではないと判定
+
+snippet stats_Fisher'sExact.test
+	data = matrix(c(8, 4, 3, 10), nrow = 2, byrow = T)${0}
+	colnames(data) = c("smoking", "non-smoking")
+	rownames(data) = c("cancer", "normal")
+	data
+	fisher.test(data)
+	# p-value0.047でがんの発生頻度の同等性が棄却され、差があると判定
+
+snippet stats_SingleRegressionAnalysis
+	# single regression analysis${0}
+	height = c(175, 179, 162, 184, 170, 167)
+	weight = c(75, 80, 60, 80, 66, 55)
+	plot(weight ~ height)
+	result = lm(weight ~ height)
+	abline(result)
+	summary(result)
+	# 回帰式は、y = 1.197 * x -137.6084となる
+
+snippet stats_MultipleRegressionAnalysis
+	# multiple regression analysis${0}
+	# Y = ax1 + bx2 + cx3 + d (a, b, cが偏回帰係数, dが定数項)
+	# 変数は独立で、正規分布が前提
+	# 説明変数が影響しあい相互作用がある場合、偏回帰係数が求められない場合->多重共線性
+	(data = data.frame(FPG = c(120, 100, 150, 200), 
+	                  weight = c(65, 70, 80, 82), 
+	                  HbA1c = c(8, 5, 10, 11)))
+	round(cor(data),4)
+	pairs(data)
+	(result = lm(FPG ~., data = data))
+	# FPG = 1.848 * weight + 10.821 * HbA1c -86.657
+	summary(result)
+	# 決定係数（Multiple R-squared）0.8863と自由度調整済み決定係数(Adjusted R-squared)で当てはまりをみる
+
+snippet stats_correlation
+	# 相関係数（ピアソンの積率相関係数）${0}
+	height = c(175, 179, 162, 184, 170, 167)
+	weight = c(75, 80, 60, 80, 66, 55)
+	cor(height, weight, method = "pearson")
+	# |0.7|以上を強い相関、|0.2|以下はほとんど相関がないと判断
+	cor.test(height, weight, method = "pearson") # 無相関検定
+	# 帰無仮説はheightとweightが相関しない。p値0.01127なので有意に相関する。
+	# ノンパラメトリックな検定(スピアマンの順位相関係数、ケンドールの順位相関係数)
+	cor(height, weight, method = "spearman")
+	cor(height, weight, method = "kendall")
+
+snippet stats_LogisticRegression
+	# logistic regression analysis ${0}
+	# log(p/1-p) = β0 + β1 * x1 + β2 * x2
+	(cdata = data.frame(cancer = c(1,1,1,1,1,0,0,0,0,0),
+	                   marker1 = c(30,25,5,15,20,4,10,7,19,8),
+	                   marker2 = c(145,170,80,200,154,115,120,119,100,110)))
+	result = glm(cancer ~ ., family = binomial, data = cdata)
+	summary(result)
+	# log(p/1-p) = 0.11047 * x1 + 0.02665 * x2 -5.00910
+
+snippet stats_CoxProportionalHazardsRegression
+	# Cox proportional hazards regression ${0}
+	# ある疾患において、疾患発症や死亡などの事象が発生するまでの時間を解析する。
+	# ある時点の瞬間死亡率をハザード(ハザード関数;h(t))、
+	# この関数のすべての説明変数が0の場合をベースラインハザード(基準ハザード; h0(t))と呼ぶ
+	# log(h(t)/h0(t)) = b1*x1 + b2*x2 + b3*x3 + ...
+	library(survival)
+	head(kidney) # time; 生存期間, status; 0:生存(打ち切り),1:死亡, sex; 1:male, 2:female
+	result = coxph(Surv(time, status) ~ sex + disease, data = kidney)
+	summary(result)
+	plot(survfit(result))
+	# log(h(t)/h0(t)) = -1.4777*sex + 0.1392*diseaseGN + 0.4132*diseaseAN - 1.3671*diseasePKD
+	# diseasePKDが有意(Pr=0.0203), 女性(=値が大きい)ほど死ぬ確率(ハザードが起こる確率)が低い(値が小さい)
+
+snippet stats_PrincipalComponentAnalysis
+	# Principal component analysis${0}
+	head(USArrests)
+	(result = prcomp(USArrests, scale = T)) # scale=Tでデータの相関行列を用いた主成分分析
+	summary(result)
+	biplot(result)
+	# PC1, PC2は説明変数から合成したあらたな座標軸。主成分分析では、説明変数の次元数を減らしてくれる
+	# WestVirginiaは人口が少なく、犯罪が少ない。Calforniaは人口も犯罪も多い
+	# Florida,NewMexicoは人口は中規模だが、犯罪が多い	
+	
+snippet stats_DiscriminantAnalysis
+	# Discriminant analysis(判別分析)${0}
+	geneA = c(62,69,75,49,37,55,41,67,70,62)
+	geneB = c(177,140,142,117,124,112,101,100,86,96)
+	geneC = c(134,86,55,100,99,113,92,35,37,51)
+	(data = as.matrix(cbind(geneA, geneB, geneC)))
+	(grouping = matrix(c(rep("1",5),rep("0",5)), nrow = 10, ncol = 1)) # 1;健常者,2;患者
+	library(MASS)
+	(result = lda(data, grouping))
+	apply(result\$means %*% result\$scaling, 2, mean)
+	# 判別関数は, y = - 0.08097267*x1 + 0.09364603*x2 - 0.03569151*x3 -3.575145
+	(result2 = predict(result))                        # 判別関数を用いて予測
+	table(grouping, predict(result)\$class) # 上の0が患者、1が健常者、左の0が陽性、1が陰性
+	# 健常者5人中4名が健常者と判定
+	plot(result2\$x)
+	abline(h=0);abline(v=5.5)
+	
+snippet stats_ClusterAnalysis
+	# Cluster analysis${0}
+	geneA = c(62,69,75,49,37,55,41,67,70,62)
+	geneB = c(177,140,142,117,124,112,101,100,86,96)
+	geneC = c(134,86,55,100,99,113,92,35,37,51)
+	(data = as.matrix(cbind(geneA, geneB, geneC)))
+	(result = hclust(dist(data), method = "ward.D2"))
+	plot(result)
+
+# /* math */
+snippet math_P_C_factorial
+	# permutations:順列${0}
+	# combinations:組み合わせ
+	# factorial:階乗
+	library(gtools)
+	permutations(3, 2, letters[1:3])
+	combinations(3,2,letters[1:3])
+	factorial(3)
+
+
+# /* leaflet */
+snippet leaflet_base
+	# leaflet_base----${0}
+	library(leaflet)
+	m <- leaflet() %>%
+	  addTiles() %>%  # Add default OpenStreetMap map tiles
+	  addMarkers(lng=174.768, lat=-36.852, popup="The birthplace of R")
+	m  # Print the map
+
+snippet leaflet_basemaps
+	# leaflet_basemaps----${0}
+	library(leaflet)
+	m <- leaflet() %>% setView(lng = -71.0589, lat = 42.3601, zoom = 12)
+	m %>% addTiles()
+	m %>% addProviderTiles(providers\$Stamen.Toner)
+	m %>% addProviderTiles(providers\$CartoDB.Positron)
+	m %>% addProviderTiles(providers\$Esri.NatGeoWorldMap)
+	m %>% addProviderTiles(providers\$MtbMap) %>%
+	  addProviderTiles(providers\$Stamen.TonerLines,
+	                   options = providerTileOptions(opacity = 0.35)) %>%
+	  addProviderTiles(providers\$Stamen.TonerLabels)
+	# baselayerchange
+	l <- leaflet() %>% setView(0,0,3)
+	esri <- grep("^Esri", providers, value = TRUE)
+	for (provider in esri) {
+	  l <- l %>% addProviderTiles(provider, group = provider)
+	}
+	l %>%
+	  addLayersControl(baseGroups = names(esri),
+	                   options = layersControlOptions(collapsed = FALSE)) %>%
+	  addMiniMap(tiles = esri[[1]], toggleDisplay = TRUE,
+	             position = "bottomleft") %>%
+	  htmlwidgets::onRender("
+	                        function(el, x) {
+	                        var myMap = this;
+	                        myMap.on('baselayerchange',
+	                        function (e) {
+	                        myMap.minimap.changeLayer(L.tileLayer.provider(e.name));
+	                        })
+	                        }")
+
+snippet leaflet_basemaps
+	# leaflet_markers----${0}
+	(data = expand.grid(1:10,1:10)/100)
+	colnames(data) = c("Lat", "Long")
+	data\$Lat = data\$Lat + 43.053
+	data\$Long = data\$Long + 141.363
+	leaflet(data) %>% 
+	  addProviderTiles(providers\$Esri.WorldImagery) %>% 
+	  addCircles(lng = ~Long, lat = ~Lat, color = "red", radius = 150)
+
+# /* image */
+snippet image_browse
+	#image_browser.R----${0}
+	library(htmltools)
+	library(dplyr)
+	make_viewer = function(path = "img", write_path = "img_viewer.html", rm_file = FALSE){
+	  img_list = list.files(path)
+	  create_imgtag = function(list){
+	    tags\$div(
+	      tags\$img(src = paste0(path, "/", list), width="200"),
+	      tags\$p(list)
+	    )
+	  }
+	  tagList(
+	    tags\$head(
+	      tags\$link(rel = "stylesheet", type = "text/css", href = "css/main.css"),
+	      tags\$script(type = "text/javascript", src ="js/sample.js")
+	    ),
+	    tags\$body(
+	      lapply(img_list, create_imgtag)
+	    )
+	  ) -> html_text 
+	  save_html(html_text, file = write_path)
+	  cat(readLines(write_path), sep = "\n")
+	  browseURL(write_path)
+	  Sys.sleep(3)
+	  if (rm_file == T) { file.remove(write_path)}
+	  print(paste("画像は、", length(img_list), "枚です。"))
+	}
+	make_viewer(rm_file = T)
+
+# /* file */
+snippet fileCSV
+	write.csv(Theoph, file = "Theoph.csv", row.names = F)
+	(df = read.csv("Theoph.csv", header = T))
+
+snippet dotfiles
+	# show hidden files${0}
+	list.files("~/", all.files = T)
+	file.edit("~/.bashrc")
+
+# /* refClass */
+snippet refClass
+	# refClass----${0}
+	Animal = setRefClass("Animal",
+	                     fields = list(life = "numeric"),
+	                     methods = list(
+	                       initialize = function(){
+	                         life <<- 10
+	                       }
+	                     ))
+	japanease = setRefClass("human",
+	                        contains = c("Animal"),
+	                        fields = list(
+	                          age = "numeric",
+	                          comment = "character"),
+	                        methods = list(
+	                          initialize = function(age = NULL){
+	                            callSuper()                  # 親クラスのコンストラクタを実行
+	                            if (is.null(age)){
+	                              comment <<- "I don't know."
+	                            } else {
+	                              age <<- age
+	                              comment <<- paste("I'm ", as.character(age), "years old.")
+	                            }
+	                          },
+	                          get_comment = function(){
+	                            comment <<- paste("I'm ", as.character(.self\$age), "years old.")
+	                          }
+	                        ))
+	# sample_code
+	jp = japanease\$new()
+	jp\$life
+	jp\$comment
+	jp = japanease\$new(30)
+	jp\$comment
+	jp\$age = 28
+	jp\$get_comment()
+	jp\$comment
+
+
+# /* shiny */
+snippet shinyapp
+	library(shiny)
+	
+	ui <- fluidPage(
+	  ${0}
+	)
+	
+	server <- function(input, output, session) {
+	  
+	}
+	
+	shinyApp(ui, server)
+
+snippet shinyapp_template1
+	library(shiny)
+	library(shinythemes)
+	
+	ui <- fluidPage(theme = shinytheme("flatly"),
+									titlePanel("${0}")
+	)
+	
+	server <- function(input, output, session) {
+	  
+	}
+	
+	shinyApp(ui, server)
+
+snippet shinyapp_template2
+	library(shiny)
+	library(shinythemes)
+	
+	ui <- fluidPage(theme = shinytheme("flatly"),
+									titlePanel("${0}"),
+									fluidRow(
+										column(6,
+											
+										),
+										column(6,
+											
+										)
+	)
+	)
+	
+	server <- function(input, output, session) {
+	  
+	}
+	
+	shinyApp(ui, server)
+
+snippet shinyapp_fluidRow
+	fluidRow(
+		${0}
+	)
+
+snippet shinyapp_column
+	column(2,
+		${0}
+	)
+
+snippet shinyapp_fluidRow_column
+	fluidRow(
+		column(6,
+			${0}
+		),
+		column(6,
+			
+		)
+	)
+
+snippet shinyapp_librarySet1
+	library(shiny)
+	library(shinythemes)
+	library(dplyr)
+	library(ggplot2)
+	library(patchwork)
+	library(DT)
+
+snippet shinyapp_librarySet2
+	library(shiny)
+	library(shinythemes)
+	library(dplyr)
+	library(ggplot2)
+	library(patchwork)
+	library(DT)
+	library(plotly)
+	library(visNetwork)
+	library(DiagrammeR)
+	library(magick)
+	library(EBImage)
+	library(leaflet)
+	library(ggmap)
+	
+snippet shinyEventReactive
+	library(shiny)
+	ui <- fluidPage(
+	  numericInput("data_n",
+	               label = h4("データ数:"),
+	               value = 10,
+	               step=1),
+	  actionButton("action", label = "Action"),
+	  plotOutput("Plot1")
+	)
+	server <- function(input, output) {
+	  p = eventReactive(input\$action, {
+	    ggplot(mtcars[1:input\$data_n,], aes(wt, mpg)) + geom_point()
+	  })
+	  output\$Plot1 <- renderPlot({
+	    p()
+	  })
+	}
+	shinyApp(ui = ui, server = server)
+
+snippet shinyUIbase
+	# shinyUIbase${0}
+	library(shiny)
+	library(shinythemes)
+	shinyUI(fluidPage(theme = shinytheme("flatly"),
+	                titlePanel("sample"),
+	                fluidRow(
+	                  column(3,
+	                         actionButton("action", label = "execute")
+	                  ),
+	                  column(9,
+	                         plotOutput("plot", height = 400)
+	                  )
+	                )
+	))
+
+snippet shinyUInumericInput
+	numericInput("id",
+	             label = h4("ID : "),
+	             value = 1010,
+	             step=1)
+
+snippet shinyUIradioButtons
+	radioButtons("gender",
+								label = h4("性別:"),
+								c("男性" = "1","女性" = "2"))
+
+snippet shinyUItextOutput
+	h4(textOutput("sample_text"))
+
+snippet shinyUIverbatimTextOutput
+	verbatimTextOutput("sample_text")
+
+snippet shinyUIactionButton
+	actionButton("action", label = "Action")
+
+snippet shinyUIfileInput
+	fileInput("file", label = h3("File input"))
+
+snippet shinyUIdateInput
+	dateInput("date", label = h3("Date input"), value = "2014-01-01")
+
+snippet shinyUIdateRangeInput
+	dateRangeInput("dates", label = h3("Date range"))
+
+snippet shinyUIselectInput
+	selectInput("select", label = h3("Select box"),
+		choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3),
+		selected = 1)
+
+snippet shinyUIsliderInput
+	sliderInput("slider1", label = h3("Slider"), min = 0,
+		max = 100, value = 50)
+
+snippet shinyUIsliderRangeInput
+	sliderInput("slider2", label = h3("Slider Range"), min = 0,
+		max = 100, value = c(40, 60))
+
+snippet shinyUItextInput
+	textInput("id", label = h3("id:"))
+	
+snippet shinySERVERbase
+	# shinySERVERbase${0}
+	library(shiny)
+	library(shinythemes)
+	# server----
+	shinyServer(function(input, output, session) {
+	  p = eventReactive(input\$action, {
+	    plot(cars)
+	  })
+	  output\$plot <- renderPlot({
+	    p()
+	  })
+	})
+	
+snippet shinySERVERtextOutput
+	output\$sample_text <- renderText({
+		text = 'hello world'
+	})
+	
+snippet shinyUIdataTableOutput
+	DT::dataTableOutput("mytable")
+snippet shinySERVERdataTableOutput
+	output\$mytable <- DT::renderDataTable({
+		DT::datatable(mtcars, options = list(orderClasses = TRUE))
+	})
+	
+snippet shinyUItableOutput
+	tableOutput("view")
+snippet shinySERVERtableOutput
+	output\$view <- renderTable({
+		head(mtcars, n = 10)  # n = input\$number
+	})
+
+snippet shinyUIplotOutput
+	plotOutput("plot", height = 200)
+snippet shinySERVERplotOutput
+	output\$plot <- renderPlot({
+		#plot(cars, type=input\$plotType)
+		ggplot(mtcars, aes(wt, mpg)) + geom_point()
+	})
+
+snippet shinyUIplotlyOutput
+	plotlyOutput("plotly")
+snippet shinySERVERplotlyOutput
+	output\$plotly <- renderPlotly({
+		plot_ly(z=volcano,type="heatmap")
+	})
+
+snippet shinyUIleafletOutput
+	leafletOutput("mapLeaflet")
+snippet shinySERVERleafletOutput
+	output\$mapLeaflet <- renderLeaflet({
+		leaflet() %>% 
+			addProviderTiles(providers\$Stamen.TonerLite,options = providerTileOptions(noWrap = TRUE))} %>% 
+			addMiniMap(tiles = providers\$Esri.WorldStreetMap,toggleDisplay = TRUE))
+
+snippet shinyUIgrVizOutput
+	grVizOutput("diagram",width ="100%",height="300px") 
+snippet shinySEVERgrVizOutput
+	output\$diagram <- renderGrViz({
+		nodes <- create_node_df(3)
+		edges <- create_edge_df(from = 1:3,to = c(2,3,1))
+		create_graph(nodes,edges) %>% render_graph()
+	})
+
+snippet shinyUIvisNetworkOutput
+	visNetworkOutput("visnetwork") 
+snippet shinySERVERvisNetworkOutput
+	output\$visnetwork <- renderVisNetwork({
+		nodes <- data.frame(id = 1:3,label=1:3)
+		edges <- data.frame(from = c(1,2,3), to = c(2,3,1))
+		visNetwork(nodes, edges)
+	})
+
+snippet shinyUIimageOutput
+	imageOutput("imageoutput") 
+snippet shinySERVERimageOutput
+	output\$imageoutput <- renderImage({
+		filename <- normalizePath("img/sample.png")  
+		list(src=filename,width = 300)
+	}, deleteFile = FALSE)
+
+snippet shinyUIimageOutput_click
+	imageOutput("clickImage",click = "image_click"),
+	verbatimTextOutput("infoClickImageXY") 
+snippet shinySERVERimageOutput_click
+	output\$clickImage <- renderImage({
+		list(src = "../sample.png",width = 400)
+		}, deleteFile = FALSE)
+	output\$infoClickImageXY <- renderText({
+		paste0("x=",input\$image_click\$x,"y=",input\$image_click\$y)
+	})
+
+snippet shinyUIplotOutput_click
+	plotOutput("clickPlot",click ="plot_click"),
+	verbatimTextOutput("infoClickPlotXY") 
+snippet shinySERVERplotOutput_click
+	output\$clickPlot <- renderPlot({
+		ggplot(iris,aes(Sepal.Width,Sepal.Length))+geom_point()
+	})
+	output\$infoClickPlotXY <- renderText({
+		paste0("x=", input\$plot_click\$x, "y=", input\$plot_click\$y)
+	})
+
+
