@@ -43,7 +43,7 @@ yarepl.setup {
 
 vim.api.nvim_set_keymap("n", "<localleader>r", "<cmd>REPLStart<CR><C-w>k", {noremap = true, silent = true})
 vim.api.nvim_set_keymap("n", "<localleader>l", "<cmd>REPLSendLine<CR>", {noremap = true, silent = true})
-vim.api.nvim_set_keymap("n", "<localleader>s", ":<C-u>REPLSendVisual<CR>", {noremap = true, silent = true})
+vim.api.nvim_set_keymap("v", "<localleader>s", ":<C-u>REPLSendVisual<CR>", {noremap = true, silent = true})
 vim.api.nvim_set_keymap("n", "<localleader>p", "vipj:<C-u>REPLSendVisual<CR>", {noremap = true, silent = true})
 
 
